@@ -8,14 +8,16 @@ import java.util.List;
 
 public interface SaleDetailRepository extends JpaRepository<SaleDetail, Integer> {
 
-    @Query("SELECT p.id, SUM(sd.quantity), p.name FROM SaleDetail sd " +
-            "JOIN sd.product p " +
-            "GROUP BY p.id ORDER BY SUM(sd.quantity) DESC")
+    @Query("SELECT sd.productName, SUM(sd.quantity) AS totalQuantity " +
+            "FROM SaleDetail sd " +
+            "GROUP BY sd.productName " +
+            "ORDER BY totalQuantity DESC")
     List<Object[]> findTopSellingProducts();
 
-    @Query("SELECT p.id, SUM(sd.quantity * sd.price), p.name FROM SaleDetail sd " +
-            "JOIN sd.product p " +
-            "GROUP BY p.id ORDER BY SUM(sd.quantity * sd.price) DESC")
+    @Query("SELECT sd.productName, SUM(sd.quantity * sd.productSalePrice) AS totalRevenue " +
+            "FROM SaleDetail sd " +
+            "GROUP BY sd.productName " +
+            "ORDER BY totalRevenue DESC")
     List<Object[]> findTotalRevenueByProduct();
 
 }

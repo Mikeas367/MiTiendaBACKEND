@@ -26,7 +26,7 @@ public class SaleController {
     }
 
     @PostMapping()
-    public Sale addSale(@RequestBody Sale sale) {
+    public Sale addSale(@RequestBody Sale sale) {;
         return saleService.addSale(sale);
     }
 

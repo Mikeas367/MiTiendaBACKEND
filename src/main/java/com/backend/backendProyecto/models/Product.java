@@ -46,4 +46,15 @@ public class Product {
     public void setStock(int stock) {
         this.stock = stock;
     }
+
+    @Override
+    public String toString() {
+        return "\nProduct{" +
+                "\nid=" + id +
+                ", \nname='" + name + '\'' +
+                ", \nsalePrice=" + salePrice +
+                ", \ncostPrice=" + costPrice +
+                ", \nstock=" + stock +
+                '}';
+    }
 }

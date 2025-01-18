@@ -3,8 +3,6 @@ package com.backend.backendProyecto.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
-import java.util.List;
-
 
 @Entity
 public class SaleDetail {
@@ -17,12 +15,31 @@ public class SaleDetail {
     @JsonBackReference
     private Sale sale;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    //@ManyToOne
+    //@JoinColumn(name = "product_id")
+    //private Product product;
 
     private int quantity;
     private double price;
+
+    private String productName;
+    private double productSalePrice;
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public double getProductSalePrice() {
+        return productSalePrice;
+    }
+
+    public void setProductSalePrice(double productSalePrice) {
+        this.productSalePrice = productSalePrice;
+    }
 
     public int getId() {
         return id;
@@ -32,9 +49,6 @@ public class SaleDetail {
         return sale;
     }
 
-    public Product getProduct() {
-        return product;
-    }
 
     public int getQuantity() {
         return quantity;
@@ -48,9 +62,7 @@ public class SaleDetail {
         this.sale = sale;
     }
 
-    public void setProduct(Product products) {
-        this.product = products;
-    }
+
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
@@ -59,4 +71,6 @@ public class SaleDetail {
     public void setPrice(double price) {
         this.price = price;
     }
+
+
 }

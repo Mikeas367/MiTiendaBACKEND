@@ -47,4 +47,6 @@ public class Sale {
     public void setTotal(double total) {
         this.total = total;
     }
+
+
 }

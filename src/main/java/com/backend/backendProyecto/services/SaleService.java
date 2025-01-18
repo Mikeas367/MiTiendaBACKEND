@@ -36,8 +36,8 @@ public class SaleService {
             saleDTO.setDetails(
                     sale.getDetails().stream().map(detail -> {
                         SaleDetailDTO detailDTO = new SaleDetailDTO();
-                        detailDTO.setProductName(detail.getProduct().getName());
-                        detailDTO.setProductPrice(detail.getProduct().getSalePrice());
+                        detailDTO.setProductName(detail.getProductName());
+                        detailDTO.setProductPrice(detail.getProductSalePrice());
                         detailDTO.setQuantity(detail.getQuantity());
                         return detailDTO;
                     }).collect(Collectors.toList())
@@ -54,8 +54,13 @@ public class SaleService {
     public Sale addSale(Sale sale) {
         for (SaleDetail detail : sale.getDetails() ) {
             // obtengo el producto del detalle
-            Product product = productRepository.findById(detail.getProduct().getId())
-                    .orElseThrow(() -> new ResourceNotFoundExeption("Product not found"));
+            //Product product = productRepository.findById(detail.getProduct().getId())
+            //        .orElseThrow(() -> new ResourceNotFoundExeption("Product not found"));
+
+            if (!productRepository.existsByName(detail.getProductName())){
+                throw new ResourceNotFoundExeption("product with name: " + detail.getProductName() + " not found");
+            }
+            Product product = productRepository.findByName(detail.getProductName());
 
             // veo el stock
             if (product.getStock() < detail.getQuantity()) {
@@ -63,7 +68,11 @@ public class SaleService {
             }
 
             product.setStock(product.getStock() - detail.getQuantity());
-            detail.setPrice(product.getSalePrice());
+            productRepository.save(product); // guardo el stock
+
+            detail.setProductName(product.getName());
+            detail.setProductSalePrice(product.getSalePrice());
+            detail.setPrice(product.getSalePrice() * detail.getQuantity());
             detail.setSale(sale);
 
 
@@ -73,6 +82,7 @@ public class SaleService {
                 .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
                 .sum());
 
+
         return saleRepository.save(sale);
 
     }
@@ -81,9 +91,8 @@ public class SaleService {
         return saleDetailRepository.findTopSellingProducts()
                 .stream()
                 .map(result -> Map.of(
-                        "productId", result[0],
-                        "productName", result[2],
-                        "totalQuantity", result[1]
+                        "productName", result[0],       // Índice 0: Nombre del producto
+                        "totalQuantity", result[1]      // Índice 1: Cantidad total
                 ))
                 .collect(Collectors.toList());
     }
@@ -92,9 +101,8 @@ public class SaleService {
         return saleDetailRepository.findTotalRevenueByProduct()
                 .stream()
                 .map(result -> Map.of(
-                        "productId", result[0],
-                        "productName", result[2],
-                        "totalRevenue", result[1]
+                        "productName", result[0],       // Índice 0: Nombre del producto
+                        "totalRevenue", result[1]       // Índice 1: Ingresos totales
                 ))
                 .collect(Collectors.toList());
     }
